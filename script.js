@@ -1,13 +1,18 @@
-const apiURL = "" //Write the URL Here.
+const apiURL = "https://libretranslate.com/translate";
 
 
-function translateToJapanese() {
+const translateToJapanese = (event) => {
+  event.preventDefault();
   const input = document.getquerySelector("#textToTranslate")
   const japOutput =
 
 }
 
 function translateToJap() {}
+
+
+
+
 
 
 
