@@ -4,7 +4,7 @@ const translateToJapanese = async (event) => {
   event.preventDefault();
   console.log("Translate button clicked");
 
-  const textToTranslate = document.querySelector("#textToTranslate").value;
+  let textToTranslate = document.querySelector("#textToTranslate").value;
   const japOutput = document.querySelector(".japaneseResult");
 
   console.log("Text to translate:", textToTranslate);
@@ -12,13 +12,18 @@ const translateToJapanese = async (event) => {
 
   japOutput.innerHTML = "Translating...";  // Indicate that translation is in progress
 
+  // Add a period at the end if it doesn't already have one
+  if (!textToTranslate.endsWith(".")) {
+    textToTranslate += ".";
+  }
+
   try {
     const res = await fetch(apiURL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         q: textToTranslate,
-        source: "en",
+        source: "auto",
         target: "ja",
         format: "text",
         api_key: ""  // No API key needed for LibreTranslate free tier
@@ -30,6 +35,8 @@ const translateToJapanese = async (event) => {
 
     if (data.translatedText) {
       japOutput.innerHTML = data.translatedText;
+    } else if (data.error) {
+      japOutput.innerHTML = `Error: ${data.error}`;
     } else {
       japOutput.innerHTML = "Translation not available.";
     }
