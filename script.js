@@ -1,4 +1,5 @@
-const apiURL = "https://libretranslate.com/translate";
+const apiURL = "https://translation.googleapis.com/language/translate/v2";
+const apiKey = "YOUR_GOOGLE_CLOUD_API_KEY"; // Replace with your actual API key
 
 const translateToJapanese = async (event) => {
   event.preventDefault();
@@ -18,25 +19,24 @@ const translateToJapanese = async (event) => {
   }
 
   try {
-    const res = await fetch(apiURL, {
+    const res = await fetch(`${apiURL}?key=${apiKey}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         q: textToTranslate,
-        source: "auto",
+        source: "en",
         target: "ja",
-        format: "text",
-        api_key: ""  // No API key needed for LibreTranslate free tier
+        format: "text"
       })
     });
 
     const data = await res.json();
     console.log("API response:", data);
 
-    if (data.translatedText) {
-      japOutput.innerHTML = data.translatedText;
+    if (data.data && data.data.translations && data.data.translations[0]) {
+      japOutput.innerHTML = data.data.translations[0].translatedText;
     } else if (data.error) {
-      japOutput.innerHTML = `Error: ${data.error}`;
+      japOutput.innerHTML = `Error: ${data.error.message}`;
     } else {
       japOutput.innerHTML = "Translation not available.";
     }
@@ -48,6 +48,7 @@ const translateToJapanese = async (event) => {
 
 const form = document.querySelector("#translateionForm");
 form.addEventListener("submit", translateToJapanese);
+
 
 
 
