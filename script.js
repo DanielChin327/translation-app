@@ -1,14 +1,46 @@
 const apiURL = "https://libretranslate.com/translate";
 
-
-const translateToJapanese = (event) => {
+const translateToJapanese = async (event) => {
   event.preventDefault();
-  const input = document.getquerySelector("#textToTranslate")
-  const japOutput =
+  console.log("Translate button clicked");
 
-}
+  const textToTranslate = document.querySelector("#textToTranslate").value;
+  const japOutput = document.querySelector(".japaneseResult");
 
-function translateToJap() {}
+  console.log("Text to translate:", textToTranslate);
+  console.log("Japanese Result element:", japOutput);
+
+  japOutput.innerHTML = "Translating...";  // Indicate that translation is in progress
+
+  try {
+    const res = await fetch(apiURL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        q: textToTranslate,
+        source: "en",
+        target: "ja",
+        format: "text",
+        api_key: ""  // No API key needed for LibreTranslate free tier
+      })
+    });
+
+    const data = await res.json();
+    console.log("API response:", data);
+
+    if (data.translatedText) {
+      japOutput.innerHTML = data.translatedText;
+    } else {
+      japOutput.innerHTML = "Translation not available.";
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    japOutput.innerHTML = "Error in translation.";
+  }
+};
+
+const form = document.querySelector("#translateionForm");
+form.addEventListener("submit", translateToJapanese);
 
 
 
@@ -20,6 +52,7 @@ function translateToJap() {}
 
 
 
+/*
 // The following is an example of using Dictionary
 const apiUrl = "https://api.dictionaryapi.dev/api/v2/entries/en/"
 
@@ -38,3 +71,4 @@ const displayDefinition = (event) => {
 
 const form = document.getElementById("fetch-word");
 form.addEventListener("submit", displayDefinition);
+*/
